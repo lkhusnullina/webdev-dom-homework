@@ -79,6 +79,7 @@ export const AddComment = () => {
     })
     .finally(() => {
       wait.textContent = '';
+      addFormButton.setAttribute('disabled', true);
     });
 
   loadComments();
