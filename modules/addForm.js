@@ -34,7 +34,7 @@ export const init = () => {
     AddComment();
   });
 
-  addFormText.addEventListener('input', (e) => {
+  addFormText.addEventListener('input', () => {
     if (addFormText.value === '') {
       addFormButton.setAttribute('disabled', true);
     } else {
