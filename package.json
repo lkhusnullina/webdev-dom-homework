@@ -9,6 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development --watch",
+    "lint:js": "eslint",
+    "lint": "npm run lint:js",
     "prepare": "husky install"
   },
   "repository": {
