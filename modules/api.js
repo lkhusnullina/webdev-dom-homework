@@ -1,7 +1,8 @@
-import { renderComments } from "./comments.js";
-import { getUser } from "./userStore.js";
+import { renderComments } from './comments.js';
+import { getUser } from './userStore.js';
 
-const commentsUrl = 'https://wedev-api.sky.pro/api/v2/lyubov-khusnullina/comments';
+const commentsUrl =
+  'https://wedev-api.sky.pro/api/v2/lyubov-khusnullina/comments';
 
 export function getApiComments() {
   const token = getToken();
@@ -9,18 +10,17 @@ export function getApiComments() {
     method: 'GET',
     headers: {
       Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 500) {
+      throw new Error('Сервер упал');
     }
-  })
-    .then((response) => {
-      if (response.status === 500) {
-        throw new Error('Сервер упал');
-      }
-      if (response.status === 401) {
-        throw new Error('auth');
-      }
-      const res = response.json();
-      return res;
-    });
+    if (response.status === 401) {
+      throw new Error('auth');
+    }
+    const res = response.json();
+    return res;
+  });
 }
 
 export function postApiComment({ text }) {
@@ -33,7 +33,7 @@ export function postApiComment({ text }) {
     body: JSON.stringify({
       text: text,
       forceError: true,
-    })
+    }),
   })
     .then((response) => {
       if (response.status === 500) {
@@ -49,14 +49,11 @@ export function postApiComment({ text }) {
     })
     .then(() => {
       renderComments();
-    })
+    });
 }
 
 const getToken = () => {
   const user = getUser();
   const token = user ? `Bearer ${user.token}` : null;
   return token;
-}
-
-
-
+};

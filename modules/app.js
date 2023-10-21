@@ -1,9 +1,9 @@
-import { init as initAddForm } from "./addForm.js";
-import { init as initComments } from "./comments.js";
-import { init as initDeleteComment } from "./deleteLastComments.js";
-import { loadComments } from "./comments.js";
-import { getUser, logout } from "./userStore.js";
-import { loginForm } from "./loginForm.js";
+import { init as initAddForm } from './addForm.js';
+import { init as initComments } from './comments.js';
+import { init as initDeleteComment } from './deleteLastComments.js';
+import { loadComments } from './comments.js';
+import { getUser, logout } from './userStore.js';
+import { loginForm } from './loginForm.js';
 
 export const render = () => {
   const user = getUser();
@@ -23,12 +23,12 @@ export const render = () => {
   } else {
     login();
   }
-}
+};
 
 const login = () => {
   const authButton = document.querySelector('.auth');
   authButton.addEventListener('click', loginForm);
-}
+};
 
 const exit = () => {
   const btn = document.querySelector('.logout');
@@ -36,11 +36,11 @@ const exit = () => {
     logout();
     render();
   });
-}
+};
 
 const getBottomForm = (user) => {
   if (!user) {
-    return `<div class="auth-waiter">Чтобы добавить комментарий, <span class="auth">авторизуйтесь</span></div>`
+    return `<div class="auth-waiter">Чтобы добавить комментарий, <span class="auth">авторизуйтесь</span></div>`;
   }
 
   return `<div class="add-form">
@@ -52,6 +52,4 @@ const getBottomForm = (user) => {
         </div>
         <div class="wait"></div>
         <button class="remove-form-button">Удалить последний комментарий</button>`;
-}
-
-
+};

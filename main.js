@@ -1,5 +1,5 @@
-"use strict";
+'use strict';
 
-import { render } from "./modules/app.js";
+import { render } from './modules/app.js';
 render();
-console.log("It works!");
+console.log('It works!');
