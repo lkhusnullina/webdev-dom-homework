@@ -1,6 +1,6 @@
 import { init as initAddForm } from './addForm.js';
 import { init as initComments } from './comments.js';
-import { init as initDeleteComment } from './deleteLastComments.js';
+// import { init as initDeleteComment } from './deleteLastComments.js';
 import { loadComments } from './comments.js';
 import { getUser, logout } from './userStore.js';
 import { loginForm } from './loginForm.js';
@@ -19,7 +19,7 @@ export const render = () => {
   exit();
   if (user) {
     initAddForm();
-    initDeleteComment();
+    // initDeleteComment();
   } else {
     login();
   }

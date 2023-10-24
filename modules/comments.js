@@ -2,6 +2,8 @@ import { addCommentText } from './addForm.js';
 import { getApiComments } from './api.js';
 import { getComments, setComments } from './store.js';
 import { format } from 'date-fns';
+import { getUser } from './userStore.js';
+import { init as initDeleteComment } from './deleteLastComments.js';
 
 let waiter;
 let listComments;
@@ -38,6 +40,9 @@ export const renderComments = () => {
             </div>
             </div>
             <div class="comment-footer">
+            <div>
+              ${renderDeleteButton(comment)}
+            </div>
             <div class="likes">
                 <span class="likes-counter">${comment.likes}</span>
                 <button class="like-button" data-like="${comment.isLiked}"></button>
@@ -47,6 +52,7 @@ export const renderComments = () => {
     })
     .join('');
   listComments.innerHTML = commentsHTML;
+  initDeleteComment();
 };
 
 const addLikesElements = (target) => {
@@ -83,6 +89,17 @@ export const switcher = (event) => {
   if (target.classList.contains('comment-text')) {
     areaFunction(target);
     return;
+  }
+};
+
+const renderDeleteButton = (comment) => {
+  const commentUser = getUser();
+  // console.log(comment.author.name);
+  // console.log(commentUser.name);
+  if (commentUser.name === comment.author.name) {
+    return `<button class="delete-button" data-id="${comment.id}">Удалить</button>`;
+  } else {
+    return ``;
   }
 };
 

@@ -52,6 +52,18 @@ export function postApiComment({ text }) {
     });
 }
 
+export function deleteComment(id) {
+  const token = getToken();
+  return fetch(commentsUrl + `/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    return response.json();
+  });
+}
+
 const getToken = () => {
   const user = getUser();
   const token = user ? `Bearer ${user.token}` : null;
