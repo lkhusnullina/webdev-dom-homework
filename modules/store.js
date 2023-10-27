@@ -1,10 +1,10 @@
 let comments = [];
 
 export const getComments = () => {
-    return comments;
-}
+  return comments;
+};
 
 export const setComments = (data) => {
-    if (!data) return;
-    comments = data;
-}
+  if (!data) return;
+  comments = data;
+};

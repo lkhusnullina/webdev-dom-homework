@@ -1,62 +1,68 @@
-import { addCommentText } from "./addForm.js";
-import { getApiComments } from "./api.js";
-import { getComments, setComments } from "./store.js";
+import { addCommentText } from './addForm.js';
+import { getApiComments } from './api.js';
+import { getComments, setComments } from './store.js';
+import { format } from 'date-fns';
+import { getUser } from './userStore.js';
+import { init as initDeleteComment } from './deleteLastComments.js';
 
 let waiter;
 let listComments;
 
-const options = {
-  year: '2-digit',
-  month: 'numeric',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-}
-
-const getUnsafeString = (str) => str.trim()
-  .replaceAll("&amp;", "&")
-  .replaceAll("&lt;", "<")
-  .replaceAll("&gt;", ">")
-  .replaceAll("&quot;", '"')
+const getUnsafeString = (str) =>
+  str
+    .trim()
+    .replaceAll('&amp;', '&')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>')
+    .replaceAll('&quot;', '"');
 
 export const init = () => {
   listComments = document.querySelector('.comments');
   waiter = document.querySelector('.waiter');
   listComments.addEventListener('click', switcher);
-}
+};
 
 export const renderComments = () => {
   const comments = getComments();
   if (!comments) return;
 
-  const commentsHTML = comments.map((comment) => {
-    return `<li class="comment" data-id="${comment.id}" data-name="${comment.author.name}">
-            <div class="comment-header">
-            <div>${comment.author.name}</div>
-            <div>${new Date(comment.date).toLocaleDateString('ru-RU', options).replace(',', '')}</div>
-            </div>
-            <div class="comment-body">
-            <div class="comment-text">
-                ${comment.text}
-            </div>
-            </div>
-            <div class="comment-footer">
-            <div class="likes">
-                <span class="likes-counter">${comment.likes}</span>
-                <button class="like-button" data-like="${comment.isLiked}"></button>
-            </div>
-            </div>
-            </li>`
-  }).join('');
+  const commentsHTML = comments
+    .map((comment) => {
+      const createDate = format(new Date(comment.date), 'yyyy-MM-dd hh.mm.ss');
+      return `<li class="comment" data-id="${comment.id}" data-name="
+                ${comment.author.name}">
+                <div class="comment-header">
+                  <div>${comment.author.name}</div>
+                  <div>${createDate}</div>
+                </div>
+                <div class="comment-body">
+                <div class="comment-text">
+                    ${comment.text}
+                </div>
+                </div>
+                <div class="comment-footer">
+                <div>
+                  ${renderDeleteButton(comment)}
+                </div>
+                <div class="likes">
+                    <span class="likes-counter">${comment.likes}</span>
+                    <button class="like-button" data-like="
+                    ${comment.isLiked}"></button>
+                </div>
+                </div>
+              </li>`;
+    })
+    .join('');
   listComments.innerHTML = commentsHTML;
-}
+  initDeleteComment();
+};
 
 const addLikesElements = (target) => {
   const commentBlock = target.closest('.comment');
   const commentId = commentBlock.dataset.id;
   const likes = commentBlock.querySelector('.like-button');
   const comments = getComments();
-  const comment = comments.find(c => c.id == commentId);
+  const comment = comments.find((c) => c.id == commentId);
   if (!comment) return;
 
   likes.classList.add('-loading-like');
@@ -71,7 +77,7 @@ const addLikesElements = (target) => {
     comment.isLikeLoading = false;
     renderComments();
   });
-}
+};
 
 export const switcher = (event) => {
   if (!event || !event.target) return;
@@ -86,14 +92,25 @@ export const switcher = (event) => {
     areaFunction(target);
     return;
   }
-}
+};
+
+const renderDeleteButton = (comment) => {
+  const commentUser = getUser();
+  // console.log(comment.author.name);
+  // console.log(commentUser.name);
+  if (commentUser.name === comment.author.name) {
+    return `<button class="delete-button" data-id="${comment.id}">Удалить</button>`;
+  } else {
+    return ``;
+  }
+};
 
 const areaFunction = (target) => {
   const commentBlock = target.closest('.comment');
   const commentId = commentBlock.dataset.name;
   const text = getUnsafeString(target.innerHTML) + ' \n' + commentId;
   addCommentText(text);
-}
+};
 
 function delay(interval = 300) {
   return new Promise((resolve) => {
@@ -104,14 +121,15 @@ function delay(interval = 300) {
 }
 
 export const loadComments = () => {
-  getApiComments().then((data) => {
-    waiter.style.display = 'none';
-    var res = data.comments;
-    setComments(res);
-    renderComments();
-  })
+  getApiComments()
+    .then((data) => {
+      waiter.style.display = 'none';
+      var res = data.comments;
+      setComments(res);
+      renderComments();
+    })
     .catch(() => {
       alert('Сервер сломался, попробуй позже');
       return;
-    })
-}
+    });
+};

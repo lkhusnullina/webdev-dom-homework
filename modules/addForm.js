@@ -1,5 +1,5 @@
-import { postApiComment } from "./api.js";
-import { loadComments } from "./comments.js";
+import { postApiComment } from './api.js';
+import { loadComments } from './comments.js';
 
 let addForm;
 let addFormButton;
@@ -7,11 +7,13 @@ let addFormName;
 let addFormText;
 let wait;
 
-const getSafeString = (str) => str.trim()
-  .replaceAll("&", "&amp;")
-  .replaceAll("<", "&lt;")
-  .replaceAll(">", "&gt;")
-  .replaceAll('"', "&quot;");
+const getSafeString = (str) =>
+  str
+    .trim()
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
 
 export const init = () => {
   addForm = document.querySelector('.add-form');
@@ -30,16 +32,16 @@ export const init = () => {
 
   addFormButton.addEventListener('click', () => {
     AddComment();
-  })
+  });
 
-  addFormText.addEventListener('input', (e) => {
+  addFormText.addEventListener('input', () => {
     if (addFormText.value === '') {
       addFormButton.setAttribute('disabled', true);
     } else {
-      addFormButton.removeAttribute('disabled')
+      addFormButton.removeAttribute('disabled');
     }
   });
-}
+};
 
 export const AddComment = () => {
   addForm.classList.add('add-form_disabled');
@@ -48,12 +50,13 @@ export const AddComment = () => {
   postApiComment({
     text: getSafeString(addFormText.value),
     date: new Date(),
-  }).then(() => {
-    addForm.classList.remove('add-form_disabled');
-    addFormText.value = '';
-    addFormName.classList.remove('error');
-    addFormText.classList.remove('error');
   })
+    .then(() => {
+      addForm.classList.remove('add-form_disabled');
+      addFormText.value = '';
+      addFormName.classList.remove('error');
+      addFormText.classList.remove('error');
+    })
     .catch((error) => {
       addForm.classList.remove('add-form_disabled');
 
@@ -75,15 +78,16 @@ export const AddComment = () => {
 
       alert('Ошибка соединения, попробуй позже');
       return;
-
     })
     .finally(() => {
       wait.textContent = '';
+      addFormButton.setAttribute('disabled', true);
     });
 
   loadComments();
-}
+};
 
 export const addCommentText = (text) => {
   addFormText.value = `${'>'}` + text;
-}
+  addFormButton.removeAttribute('disabled');
+};
